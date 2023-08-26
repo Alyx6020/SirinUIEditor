@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="App">
+      <UniqueIdentifier>{519bd624-81cd-4e2c-8aea-c810e076a1a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{cb3dd384-3c8d-465c-b126-9beb2146dc04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Window">
+      <UniqueIdentifier>{62a4fde8-86b4-4ac2-8f6b-8b3a8030d1b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{8eb862ee-1dbb-46c1-abdc-f708717a8ebc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{42db1256-39b2-40bd-914b-e4f8677a634d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\DXError">
+      <UniqueIdentifier>{11a9fd03-8e5c-4e37-ab66-73597feab223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Macros">
+      <UniqueIdentifier>{94d40770-85d8-489e-a300-ccaab5a9b1e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IBindable">
+      <UniqueIdentifier>{3fb86f2f-6a74-46aa-87f9-0acd31a8facb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\IBindable">
+      <UniqueIdentifier>{42f5d04c-e57a-4640-a196-8c17de73c1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drawable">
+      <UniqueIdentifier>{50de7e91-1db9-4899-8191-3091f352e7ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawable">
+      <UniqueIdentifier>{8bf8029c-1a3b-4cb5-b173-8986b943c01b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\Gui">
+      <UniqueIdentifier>{91b5235f-3419-4794-8ac9-7994b2d8f4ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Importers">
+      <UniqueIdentifier>{87b4e198-7ca0-4c1e-acda-1c045eb5debb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exporters">
+      <UniqueIdentifier>{8154d45d-56cb-4a8c-ac75-ae0940b13174}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine\Exception.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine/main.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Window\Keyboard.cpp">
+      <Filter>Engine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Window\Mouse.cpp">
+      <Filter>Engine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Window\Window.cpp">
+      <Filter>Engine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="App\App.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Timer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DXError\dxerr.cpp">
+      <Filter>Engine\DXError</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DXError\DxgiInfo.cpp">
+      <Filter>Engine\DXError</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\PixelShader.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\InputLayout.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\IBindable.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\VertexShader.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\VertexBuffer.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\IndexBuffer.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\Topology.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\TransformConstBuffer.cpp">
+      <Filter>Engine\IBindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Bindable\Cube.cpp">
+      <Filter>Engine\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Entity.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="App\Gui.cpp">
+      <Filter>App\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ImGui\ImGuiManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ImGui\imgui_impl_win32.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Camera.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="App\Managers\FileOpenManager.cpp" />
+    <ClCompile Include="App\FileOpenDialog.cpp" />
+    <ClCompile Include="App\Importers\CameraImporter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\resource.h" />
+    <ClInclude Include="Engine\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="App\App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Window\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Window\Mouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Window\Keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DXError\dxerr.h">
+      <Filter>Engine\DXError</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DXError\DxgiInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GraphicsExceptionMacros.h">
+      <Filter>Header Files\Macros</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Window\WindowExceptionMacros.h">
+      <Filter>Header Files\Macros</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\IBindable.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\PixelShader.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\InputLayout.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\IndexBuffer.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\VertexShader.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\VertexBuffer.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\ConstantBuffers.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\Topology.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\TransformConstBuffer.h">
+      <Filter>Header Files\IBindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Bindable\Cube.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Entity.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EntityBase.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="App\Gui.h">
+      <Filter>App\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ImGui\ImGuiManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ImGui\imgui_impl_win32.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ImGui\imgui_impl_dx11.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Camera.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="App\Managers\FileOpenManager.h" />
+    <ClInclude Include="App\FileOpenDialog.h" />
+    <ClInclude Include="App\Importers\CameraImporter.h" />
+    <ClInclude Include="App\Importers\IImportable.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes.h">
+      <Filter>App</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Engine\Icon\rf.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RFMapExportTool.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Engine\DXError\DXGetErrorDescription.inl">
+      <Filter>Engine\DXError</Filter>
+    </None>
+    <None Include="Engine\DXError\DXGetErrorString.inl">
+      <Filter>Engine\DXError</Filter>
+    </None>
+    <None Include="Engine\DXError\DXTrace.inl">
+      <Filter>Engine\DXError</Filter>
+    </None>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Engine\Shaders\PixelShader.hlsl" />
+    <FxCompile Include="Engine\Shaders\VertexShader.hlsl" />
+  </ItemGroup>
+</Project>
