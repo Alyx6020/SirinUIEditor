@@ -19,6 +19,8 @@ public:
 			LRelease,
 			RPress,
 			RRelease,
+			MPress,
+			MRelease,
 			WheelUp,
 			WheelDown,
 			Move,
@@ -87,7 +89,10 @@ public:
 	int GetPosY() const noexcept;
 	bool IsInWindow() const noexcept;
 	bool LeftIsPressed() const noexcept;
+	bool MiddleIsPressed() const noexcept;
 	bool RightIsPressed() const noexcept;
+	bool LeftIsReleased() const noexcept;
+	float GetWheelDelta() noexcept;
 	Mouse::Event Read() noexcept;
 	std::optional<RawDelta> ReadRawDelta() noexcept;
 	bool IsEmpty() const noexcept
@@ -95,26 +100,36 @@ public:
 		return buffer.empty();
 	}
 	void Flush() noexcept;
+	float mouseWheelDelta = 0;
 private:
 	void OnRawDelta(int dx, int dy) noexcept;
+	void OnWheelDelta(float delta);
 	void OnMouseMove(int x, int y) noexcept;
 	void OnMouseEnter() noexcept;
 	void OnMouseLeave() noexcept;
 	void OnLeftPressed(int x, int y) noexcept;
 	void OnLeftReleased(int x, int y) noexcept;
+
 	void OnRightPressed(int x, int y) noexcept;
 	void OnRightReleased(int x, int y) noexcept;
+	void OnMiddleUp(int x, int y) noexcept;
+	void OnMiddleDown(int x, int y) noexcept;
 	void OnWheelUp(int x, int y) noexcept;
 	void OnWheelDown(int x, int y) noexcept;
 	void TrimRawInputBuffer() noexcept;
 	void TrimBuffer() noexcept;
 private:
-	static constexpr unsigned int bufferSize = 16u;
+	static constexpr uint32_t bufferSize = 16u;
 	int x = 0;
 	int y = 0;
 	bool leftIsPressed = false;
 	bool rightIsPressed = false;
+	bool middleIsPressed = false;
 	bool isInWindow = false;
+	float wheelDelta = 0;
 	std::queue<Event> buffer;
 	std::queue<RawDelta> rawDeltaBuffer;
+public:
+	const int& c_x = x;
+	const int& c_y = y;
 };

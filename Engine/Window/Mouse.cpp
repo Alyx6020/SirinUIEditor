@@ -22,12 +22,22 @@ void Mouse::OnRawDelta(int dx, int dy) noexcept
 	TrimBuffer();
 }
 
+void Mouse::OnWheelDelta(float delta)
+{
+	wheelDelta = delta;
+}
+
 void Mouse::TrimRawInputBuffer() noexcept
 {
 	while (rawDeltaBuffer.size() > bufferSize)
 	{
 		rawDeltaBuffer.pop();
 	}
+}
+
+float Mouse::GetWheelDelta() noexcept
+{
+	return mouseWheelDelta;
 }
 
 int Mouse::GetPosX() const noexcept
@@ -53,6 +63,16 @@ bool Mouse::LeftIsPressed() const noexcept
 bool Mouse::RightIsPressed() const noexcept
 {
 	return rightIsPressed;
+}
+
+bool Mouse::MiddleIsPressed() const noexcept
+{
+	return middleIsPressed;
+}
+
+bool Mouse::LeftIsReleased() const noexcept
+{
+	return leftIsPressed;
 }
 
 Mouse::Event Mouse::Read() noexcept
@@ -126,6 +146,20 @@ void Mouse::OnRightReleased(int x, int y) noexcept
 	rightIsPressed = false;
 
 	buffer.push(Mouse::Event(Mouse::Event::Type::RRelease, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnMiddleUp(int x, int y) noexcept
+{
+	middleIsPressed = false;
+	buffer.push(Mouse::Event(Mouse::Event::Type::MRelease, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnMiddleDown(int x, int y) noexcept
+{
+	middleIsPressed = true;
+	buffer.push(Mouse::Event(Mouse::Event::Type::MPress, *this));
 	TrimBuffer();
 }
 

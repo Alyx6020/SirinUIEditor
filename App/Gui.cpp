@@ -5,107 +5,130 @@
 #include <vector>
 #include "Managers\FileOpenManager.h"
 #include "../Includes.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui_stdlib.h"
 #include <imgui_internal.h>
 #include <fstream>
 #include <DirectXTK/DDSTextureLoader.h>
 #include <DirectXTex.h>
 #include <wincodec.h>
 
+#include <ImGui/imgui_canvas.h>
+#include "AppSettings.h"
+#include "Settings.h"
+#include <Spr.h>
+
+
+static ImGuiEx::Canvas m_Canvas;
+
 
 void Gui::RenderGui(void) noexcept
 {
-    ImGui::SetNextWindowSize(ImVec2(WIDTH,HEIGHT), ImGuiCond_Always);
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
-    if (ImGui::Begin("Texture Converter",0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar))
+    
+
+    ImVec2 offset = { 0,0 };
+    ImU32 GRID_COLOR = IM_COL32_BLACK;
+    float GRID_SX = 32.0f;
+    float GRID_SY = 32.0f;
+    ImVec2 VIEW_POS = { 0,0 };
+    ImVec2 VIEW_SIZE = { WIDTH, HEIGHT };
+
+    // Draw Grid
+    auto m_DrawList = ImGui::GetBackgroundDrawList();
+
+    m_DrawList->AddRectFilled(VIEW_POS, VIEW_POS + VIEW_SIZE, IM_COL32_G_SHIFT);
+
+    for (float x = fmodf(offset.x, GRID_SX); x < VIEW_SIZE.x; x += GRID_SX)
+        m_DrawList->AddLine(ImVec2(x, 0.0f) + VIEW_POS, ImVec2(x, VIEW_SIZE.y) + VIEW_POS, GRID_COLOR);
+    for (float y = fmodf(offset.y, GRID_SY); y < VIEW_SIZE.y; y += GRID_SY)
+        m_DrawList->AddLine(ImVec2(0.0f, y) + VIEW_POS, ImVec2(VIEW_SIZE.x, y) + VIEW_POS, GRID_COLOR);
+
+    ImGui::ShowDemoWindow();
+
+
+    if (ImGui::Begin("Menu"))
     {
-        //---------------------------------------------------------
-        //  Select r3t file
-        //---------------------------------------------------------
-        
-        ImGui::Text("Extract Textures: (.r3t)");
+        // --- Workspace size ----------------------------------------------------------
+        ImGui::InputFloat("Width", &m_workspaceSize.x, 1, 10);
+        ImGui::InputFloat("Height", &m_workspaceSize.y, 1, 10);
+        ImGui::Separator();
 
-        ImGui::SeparatorText("test");
-
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 40 - ImGui::GetStyle().WindowPadding.x);
-        ImGui::InputText("##texture-extract-str", (char*)fileInput.string().c_str(), fileInput.string().size() + 1);
-        ImGui::SameLine();
-        if (ImGui::Button("...##input", ImVec2(40, 19)))
+        // --- File Paths ----------------------------------------------------------
         {
             COMDLG_FILTERSPEC rgSpec[] =
             {
-                { L"RF Texture (*.r3t)", L"*.r3t" }
+                {L"RF SPT (*.spt)",       L"*.dat"}
             };
 
-            fileDialog.Open(FOS_STRICTFILETYPES, rgSpec, 1, [&](std::string str)
+            ImGui::SeparatorText("Client SpriteImage Path");
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - (60));
+
+            static std::string datatablePath = settings::spriteImagePath.string();
+
+            if (ImGui::InputText("###settings-datatable-path-input", &datatablePath))
             {
-                    fileInput = str;
-            });
-        }
+                settings::spriteImagePath = datatablePath;
+            }
 
-        //---------------------------------------------------------
-        //  Select output folder
-        //---------------------------------------------------------
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
 
-        ImGui::Text("Output folder: (optional)");
-
-        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 40 - ImGui::GetStyle().WindowPadding.x);
-        ImGui::InputText("##texture-output-str", (char*)folderOutput.string().c_str(), folderOutput.string().size() + 1);
-        ImGui::SameLine();
-        if (ImGui::Button("...##output", ImVec2(40, 19)))
-        {
-            COMDLG_FILTERSPEC rgSpec[] =
+            if (ImGui::Button("Open###settings-sprite-path-button"))
             {
-                { L"RF Texture (*.r3t)", L"*.r3t" }
-            };
-
-            fileDialog.Open(FOS_PICKFOLDERS, rgSpec, 1, [&](std::string str)
+                if (FileOpenDialog::Get().Open(FOS_PICKFOLDERS, rgSpec, 1, &settings::spriteImagePath))
                 {
-                    folderOutput = str;
-                });
-        }
-
-        //---------------------------------------------------------
-        //  Buttons
-        //---------------------------------------------------------
-
-        ImGui::Dummy(ImVec2(0, 5));
-
-        auto btn = OutputButtons();
-        if (btn)
-        {
-            gfx.SetCursor();
-            switch (btn)
-            {
-            case 1:
-            {
-                SaveTexturesToDDS();
-                break;
+                    datatablePath = settings::spriteImagePath.string();
+                }
             }
-            case 2:
+
+            if (ImGui::Button("Save###settings-sprite-path-save", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
             {
-                SaveTexturesToBitmap();
-                break;
-            }
+                settings::Update();
             }
         }
 
-        if (future._Is_ready())
         {
-            FileOpenManager::Get().Erase(FileType::R3T, fileInput.stem().string());
-
-            SetCursor(LoadCursor(NULL, IDC_ARROW));
-            future.get();
-            outputButtonsDisabled = false;
-        }
-        else
-        {
-            if (outputButtonsDisabled)
+            ImGui::SeparatorText("SPR List");
+            if (ImGui::Button("Load SPR's", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
             {
-                SetCursor(LoadCursor(NULL, IDC_WAIT));
+                spr::Load();
+            }
+            spr::Render();
+        }
+
+        // --- Test Open Spr ----------------------------------------------------------
+
+        {
+            COMDLG_FILTERSPEC rgSpec[] =
+            {
+                {L"RF SPR (*.spr)",       L"*.spr"}
+            };
+
+            if (ImGui::Button("Open###spr_open"))
+            {
+                if (FileOpenDialog::Get().Open(FOS_STRICTFILETYPES, rgSpec, 1, nullptr))
+                {
+                }
             }
         }
     }
     ImGui::End();
+
+    auto style = ImGui::GetStyle();
+
+    ImGui::SetNextWindowSize(m_workspaceSize + style.WindowPadding * 2);
+    
+
+    if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
+    {
+        ImGui::BeginChild("area", m_workspaceSize, true);
+
+        
+
+        ImGui::EndChild();
+    }
+    ImGui::End();
+
 }
 
 void Gui::SaveTexturesToBitmap()

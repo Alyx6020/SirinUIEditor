@@ -4,11 +4,18 @@
 #include "DXError/DxgiInfo.h"
 #include "GraphicsExceptionMacros.h"
 #include <vector>
-#include <d3d11.h>
+#include <d3d11_3.h>
 #include <wrl.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <memory>
+
+class Graphics;
+
+namespace graphics
+{
+	extern Graphics* gfx;
+}
 
 class Graphics
 {
@@ -93,9 +100,15 @@ private:
 #endif
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
+
+	Microsoft::WRL::ComPtr<ID3D11Device> pDevice0;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap0;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext0;
+
+	Microsoft::WRL::ComPtr<ID3D11Device3> pDevice;
+	Microsoft::WRL::ComPtr<IDXGISwapChain2> pSwap;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext3> pContext;
+
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTarget;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 };

@@ -3,24 +3,56 @@
 #include <iostream>
 #include <sstream>
 #include <functional>
+#include <Managers/AssetManager.h>
 
 //Open
-void FileOpenManager::Open(std::filesystem::path path)
+
+std::string FileOpenManager::GetFileContents(std::filesystem::path path)
 {
-	ProcesssFile(ProcessFileFormat::PATH, path, "");
+	if (!std::filesystem::exists(path)) return "";
+	try
+	{
+		std::ifstream in(path, std::ios::in | std::ios::binary);
+		if (in)
+		{
+			std::ostringstream contents;
+			contents << in.rdbuf();
+			in.close();
+			return(contents.str());
+		}
+	}
+	catch (...)
+	{
+		return "";
+	}
 }
 
-void FileOpenManager::Open(std::string inpath, std::string section, int offset, int size)
+void FileOpenManager::Save(const std::string& originalFile, std::filesystem::path& path, const FileType& type)
 {
-	if (inpath.empty())
+	switch (type)
+	{
+
+	}
+}
+
+void FileOpenManager::Open(const std::filesystem::path& path, ProcessFileFormat format)
+{
+	try
+	{
+		ProcesssFile(format, path);
+	}
+	catch (const std::exception&)
 	{
 		return;
 	}
+}
 
-	std::filesystem::path path(section);
+void FileOpenManager::Open(const std::string& path, const std::string& section, int offset, int size)
+{
+	std::filesystem::path _path(section);
 	std::string data;
 
-	std::ifstream in(inpath, std::ios_base::in | std::ios_base::binary);
+	std::ifstream in(std::filesystem::u8path(path), std::ios_base::in | std::ios_base::binary);
 	if (in.is_open())
 	{
 		in.ignore(offset);
@@ -29,44 +61,56 @@ void FileOpenManager::Open(std::string inpath, std::string section, int offset, 
 		in.close();
 	}
 
-	ProcesssFile(ProcessFileFormat::RAW, path, data);
+	ProcesssFile(ProcessFileFormat::RAW, _path, "", data);
 }
 
-int FileOpenManager::ProcesssFile(ProcessFileFormat format, std::filesystem::path path, std::string data = "")
+void FileOpenManager::Open(const std::filesystem::path& name, const std::string& data, int offset, int size)
 {
-	//Transform extension upper;
+	std::string extension = name.extension().string();
+
+	FileType type = fileManager::GetFileType(extension);
+
+	ProcesssFile(ProcessFileFormat::RAW, name, name.stem().string(), data.substr(offset, size), type);
+}
+
+void FileOpenManager::Open(const std::filesystem::path& name, const std::filesystem::path& path, const std::string& data, int offset, int size)
+{
+	std::string extension = name.extension().string();
+	FileType type = fileManager::GetFileType(extension);
+
+	ProcesssFile(ProcessFileFormat::RAW, path, name.stem().string(), data.substr(offset, size), type);
+}
+
+int FileOpenManager::ProcesssFile(ProcessFileFormat format, const std::filesystem::path& path, const std::string& optionalName, const std::string& data, FileType type)
+{
 	std::string extension = path.extension().string();
-	std::transform(extension.begin(), extension.end(), extension.begin(), ::toupper);
 
-	if (!pFileTypeMap.contains(extension))
+	if (type == FileType::NUL)
 	{
-		return 0;
+		type = fileManager::GetFileType(extension);
 	}
-
-	FileType type = pFileTypeMap.find(extension)->second;
 
 	switch (type)
 	{
-	case FileType::R3T:
+	case FileType::SPR:
 	{
-		R3TFile r3t;
+		SprFile file;
+		file.path = path.string();
+		file.name = path.filename().string();
+		file.data = GetFileContents(path);
 
-		r3t.ext = extension;
-		r3t.name = path.stem().string();
-		r3t.path = path.string();
+		if (AssetManager::Instance().Register(FileType::SPR, file.path, file))
+		{
 
-		ProcesssR3TFile(&r3t);
-
-		Add(FileType::R3T, r3t);
-		
+		}
 
 		break;
 	}
-	default:
-		return 0;
 	}
-	return 1;
+
+	return 0;
 }
+
 
 void FileOpenManager::Add(FileType type, BaseFile& file)
 {
@@ -88,8 +132,6 @@ void FileOpenManager::Add(FileType type, BaseFile& file)
 		}
 	}
 }
-
-
 
 void FileOpenManager::ProcesssR3TFile(R3TFile* file)
 {
@@ -121,3 +163,4 @@ void FileOpenManager::ProcesssR3TFile(R3TFile* file)
 		in.close();
 	}
 }
+

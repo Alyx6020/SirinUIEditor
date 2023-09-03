@@ -10,6 +10,13 @@ int CALLBACK WinMain(
 {
 	try
 	{
+		FILE* fp;
+
+		AllocConsole();
+		freopen_s(&fp, "CONIN$", "r", stdin);
+		freopen_s(&fp, "CONOUT$", "w", stdout);
+		freopen_s(&fp, "CONOUT$", "w", stderr);
+
 		return App{}.Start();
 	}
 	catch (const Exception& e)

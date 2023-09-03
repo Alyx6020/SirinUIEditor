@@ -7,7 +7,28 @@
 #include "data.h"
 #include <map>
 
+namespace fileManager
+{
+	static std::map<std::string, FileType> pFileTypeMap = {
+		{".r3t",FileType::R3T},
+		{".spr",FileType::SPR},
+	};
 
+	static inline FileType GetFileType(const std::string& extension)
+	{
+		std::string ext(extension);
+		std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+		auto iter = pFileTypeMap.find(ext);
+
+		if (iter != pFileTypeMap.end())
+		{
+			return iter->second;
+		}
+
+		return FileType::NUL;
+	}
+}
 
 class FileOpenManager
 {
@@ -18,9 +39,15 @@ public:
 		return instance;
 	}
 
+	std::string GetFileContents(std::filesystem::path path);
+
+	//Save handler
+	void Save(const std::string& originalFile, std::filesystem::path& path, const FileType& type = FileType::NUL);
 	//Open handler
-	void Open(std::filesystem::path path);
-	void Open(std::string path, std::string section, int offset, int size);
+	void Open(const std::filesystem::path& path, ProcessFileFormat type = ProcessFileFormat::PATH);
+	void Open(const std::string& path, const std::string& section, int offset, int size);
+	void Open(const std::filesystem::path& name, const std::string& data, int offset, int size);
+	void Open(const std::filesystem::path& name, const std::filesystem::path& path, const std::string& data, int offset, int size);
 
 	BaseFile* Get(FileType type, const std::string& str)
 	{
@@ -56,7 +83,7 @@ private:
 
 	
 
-	int ProcesssFile(ProcessFileFormat format, std::filesystem::path path, std::string data);
+	int ProcesssFile(ProcessFileFormat format, const std::filesystem::path& path, const std::string& optionalName = "", const std::string& data = "", FileType type = FileType::NUL);
 	void ProcesssR3TFile(R3TFile* file);
 
 	std::map<std::string, FileType> pFileTypeMap = {

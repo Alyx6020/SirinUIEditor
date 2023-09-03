@@ -4,9 +4,15 @@
 #include <DirectXMath.h>
 #include <sstream>
 #include "ImGui\imgui_impl_dx11.h"
+#include "../Includes.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+
+namespace graphics
+{
+	Graphics* gfx;
+}
 
 Graphics::Graphics(HWND hWnd)
 {
@@ -34,7 +40,7 @@ Graphics::Graphics(HWND hWnd)
 
 	HRESULT hr;
 
-	GFX_THROW_INFO( D3D11CreateDeviceAndSwapChain(
+	D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
@@ -43,11 +49,15 @@ Graphics::Graphics(HWND hWnd)
 		0,
 		D3D11_SDK_VERSION,
 		&sd,
-		&pSwap,
-		&pDevice,
+		&pSwap0,
+		&pDevice0,
 		nullptr,
-		&pContext
-	) );
+		&pContext0
+	);
+
+	pDevice0->QueryInterface<ID3D11Device3>(&pDevice);
+	pSwap0->QueryInterface<IDXGISwapChain2>(&pSwap);
+	pContext0->QueryInterface<ID3D11DeviceContext3>(&pContext);
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> pBackBuffer;
 	GFX_THROW_INFO(pSwap->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer));
@@ -66,8 +76,8 @@ Graphics::Graphics(HWND hWnd)
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 1200u;
-	descDepth.Height = 1000u;
+	descDepth.Width = WIDTH;
+	descDepth.Height = HEIGHT;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -101,7 +111,6 @@ Graphics::Graphics(HWND hWnd)
 
 	auto style = &ImGui::GetStyle();
 
-	style->WindowBorderSize = 0;
 	style->WindowRounding = 2;
 
 	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());

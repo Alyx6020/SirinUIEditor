@@ -8,17 +8,19 @@
 #include <chrono>
 #include <thread>
 #include <Managers/FileOpenManager.h>
+#include <AppSettings.h>
 
 
 
 App::App() : 
-	wnd(WIDTH, HEIGHT,"BSP ExportTool"),
+	wnd(WIDTH, HEIGHT,"Sirin UI Editor"),
 	gui(wnd.Gfx())
 {
 }
 
 int App::Start()
 {
+	settings::Load();
 	while (true)
 	{
 		if (const auto exitCode = Window::ProcessMessages())
@@ -27,18 +29,25 @@ int App::Start()
 		}
 		AdvanceFrame();
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 }
 
 void App::AdvanceFrame()
 {
 	wnd.Gfx().ClearBuffer(0.1, 0.1, 0.1);
+	
+	if (wnd.mouse.IsInWindow())
+	{
+		gui.m_zoom = wnd.mouse.mouseWheelDelta;
+	}
+	
 
 	//ImGui
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
 
 	gui.RenderGui();
 

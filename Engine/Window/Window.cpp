@@ -182,7 +182,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		///Raw Mouse Input
 		case WM_INPUT:
 		{
-			unsigned int size = 0;
+			uint32_t size = 0;
 			if (GetRawInputData(
 				reinterpret_cast<HRAWINPUT>(lParam),
 				RID_INPUT,
@@ -206,13 +206,19 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			}
 
 			auto& rawInput = reinterpret_cast<const RAWINPUT&>(*rawBuffer.data());
-			if (rawInput.header.dwType == RIM_TYPEMOUSE &&
-				(rawInput.data.mouse.lLastX != 0 || rawInput.data.mouse.lLastY != 0))
+			if (rawInput.header.dwType == RIM_TYPEMOUSE)
 			{
-				mouse.OnRawDelta(rawInput.data.mouse.lLastX, rawInput.data.mouse.lLastY);
+				if (rawInput.data.mouse.lLastX != 0 || rawInput.data.mouse.lLastY != 0)
+				{
+					mouse.OnRawDelta(rawInput.data.mouse.lLastX, rawInput.data.mouse.lLastY);
+				}
+
+				const float delta = (float)WHEEL_DELTA * 5;
+				const float mouseWheelData = (float)((short)LOWORD(rawInput.data.mouse.usButtonData));
+
+				mouse.mouseWheelDelta = std::max(0.0f, mouse.mouseWheelDelta + mouseWheelData / delta);
+				
 			}
-
-
 			break;
 		}
 

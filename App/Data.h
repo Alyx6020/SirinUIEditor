@@ -2,11 +2,29 @@
 #include <string>
 #include <vector>
 
+
+
+enum class FileType
+{
+	NUL,
+	SPR,
+	R3T,
+	UNKNOWN
+};
+
+
 struct BaseFile
 {
+	FileType type = FileType::NUL;
+	FileType subType = FileType::NUL;
 	std::string ext;
 	std::string name;
 	std::string path;
+};
+
+struct SprFile : BaseFile
+{
+	std::string data;
 };
 
 #pragma pack(push,r1,1)
@@ -31,12 +49,30 @@ struct R3TFile : BaseFile
 	std::vector<std::string> data;
 };
 
-
-enum class FileType
+struct AssetKey
 {
-	R3T,
-	UNKNOWN
+	FileType type;
+	std::string key;
+
+	bool operator==(const AssetKey& i) const {
+		return type == i.type && _stricmp(key.c_str(), i.key.c_str()) < 0;
+	}
+
+	bool operator<(const AssetKey& i)  const {
+		return type < i.type || (type == i.type && key < i.key);
+	}
 };
+
+inline std::string operator+ (const std::string& os, FileType type)
+{
+	switch (type)
+	{
+	case FileType::NUL:		return os + ".nul";
+	case FileType::R3T:		return os + ".r3t";
+	case FileType::SPR:		return os + ".spr";
+	}
+	return os + ".nul";
+}
 
 enum class ProcessFileFormat
 {

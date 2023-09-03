@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -99,7 +99,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)App;$(ProjectDir)Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)App;$(ProjectDir)Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -151,12 +151,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App\App.cpp" />
+    <ClCompile Include="App\AppSettings.cpp" />
     <ClCompile Include="App\FileOpenDialog.cpp" />
     <ClCompile Include="App\Gui.cpp" />
+    <ClCompile Include="App\Managers\AssetManager.cpp" />
+    <ClCompile Include="App\Settings.cpp" />
+    <ClCompile Include="App\Spr.cpp" />
     <ClCompile Include="Engine\DXError\dxerr.cpp" />
     <ClCompile Include="Engine\DXError\DxgiInfo.cpp" />
     <ClCompile Include="Engine\Graphics.cpp" />
+    <ClCompile Include="Engine\GraphicsResource.cpp" />
     <ClCompile Include="Engine\ImGui\ImGuiManager.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_canvas.cpp" />
     <ClCompile Include="Engine\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Engine\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Engine\Window\Keyboard.cpp" />
@@ -168,12 +174,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\App.h" />
+    <ClInclude Include="App\AppSettings.h" />
+    <ClInclude Include="App\Assets\IAsset.h" />
+    <ClInclude Include="App\Assets\SprAsset.h" />
     <ClInclude Include="App\Data.h" />
     <ClInclude Include="App\FileOpenDialog.h" />
+    <ClInclude Include="App\Managers\AssetManager.h" />
+    <ClInclude Include="App\Settings.h" />
+    <ClInclude Include="App\Spr.h" />
     <ClInclude Include="Engine\DXError\dxerr.h" />
     <ClInclude Include="Engine\DXError\DxgiInfo.h" />
     <ClInclude Include="Engine\Graphics.h" />
+    <ClInclude Include="Engine\GraphicsResource.h" />
     <ClInclude Include="Engine\ImGui\ImGuiManager.h" />
+    <ClInclude Include="Engine\ImGui\imgui_canvas.h" />
     <ClInclude Include="Engine\ImGui\imgui_impl_dx11.h" />
     <ClInclude Include="Engine\ImGui\imgui_impl_win32.h" />
     <ClInclude Include="Engine\Window\Keyboard.h" />

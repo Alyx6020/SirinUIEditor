@@ -5,6 +5,11 @@
 #include <thread>
 #include <future>
 #include <Graphics.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui_internal.h>
+#include "ImGui/imgui_canvas.h"
+
+
 
 class Gui
 {
@@ -13,12 +18,15 @@ public:
 		:
 		gfx(gfx)
 	{
-
+		graphics::gfx = &gfx;
 	}
+
+	ImVec2 m_pos;
+	float m_zoom = 1.0f;
+
 	Graphics& gfx;
-	void RenderGui(void) noexcept;
+    void RenderGui(void) noexcept;
 private:
-	void ShowCameraImporter();
 	void SaveTexturesToBitmap();
 	void SaveTexturesToDDS();
 	int OutputButtons();
@@ -29,6 +37,9 @@ private:
 
 	std::filesystem::path fileInput {};
 	std::filesystem::path folderOutput {};
+
+
+	ImVec2 m_workspaceSize = { 250, 250 };
 
 
 	FileOpenDialog fileDialog;
