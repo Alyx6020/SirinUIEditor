@@ -47,6 +47,8 @@ SprAsset::SprAsset(const std::string& filename, const std::filesystem::path& ful
 			it.rect.w = it.xwidth;
 			it.rect.h = it.xheight;
 
+			it.path = path;
+
 			// read image data
 			it.data.resize(it.linearSize);
 			ss.read((char*)it.data.data(), it.linearSize);

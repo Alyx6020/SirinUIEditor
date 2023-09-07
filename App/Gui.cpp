@@ -129,7 +129,7 @@ void Gui::RenderGui(void) noexcept
     static Frame* selected = nullptr;
     
     //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
+    if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
     {
         auto areaTL = ImGui::GetCursorScreenPos();
 
@@ -223,6 +223,61 @@ void Gui::RenderGui(void) noexcept
     }
     ImGui::End();
     //ImGui::PopStyleVar();
+
+    // --- Workspace DDS List ----------------------------------------------------------
+    if (ImGui::Begin("Layers"))
+    {
+        
+        static std::vector<std::string> item_names = { "Item One", "Item Two", "Item Three", "Item Four", "Item Five" };
+        
+        
+        for (int n = workspace::m_assets.size() - 1; n >= 0; n--)
+        {
+            auto item = item_names[n];
+
+            auto &iter = workspace::m_assets.at(n);
+
+            ImGui::Selectable(std::string(iter->path.stem().string() + " " + std::to_string(iter->group) + " - " + std::to_string(iter->frame)).c_str());
+
+
+            if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
+            {
+                int n_next = n + (ImGui::GetMouseDragDelta(0).y > 0.f ? -1 : 1);
+                if (n_next >= 0 && n_next < workspace::m_assets.size())
+                {
+                    std::swap(workspace::m_assets[n], workspace::m_assets[n_next]);
+                    ImGui::ResetMouseDragDelta();
+                }
+            }
+        }
+
+        /*int i = workspace::m_assets.size();
+        for (auto iter = workspace::m_assets.rbegin(); iter != workspace::m_assets.rend(); ++iter)
+        {
+            ImGui::PushID(i);
+
+
+            ImGui::Selectable(std::string(iter->get()->path.stem().string() + " " + std::to_string(iter->get()->group) + " - " + std::to_string(iter->get()->frame)).c_str());
+
+            if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
+            {
+                int n_next = i + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
+                if (n_next >= 0 && n_next < workspace::m_assets.size())
+                {
+                    std::swap(workspace::m_assets[i], workspace::m_assets[n_next]);
+                    ImGui::ResetMouseDragDelta();
+                }
+            }
+
+            ImGui::PopID();
+            i--;
+        }*/
+
+        
+    }
+    ImGui::End();
+
+
 }
 
 void Gui::SaveTexturesToBitmap()

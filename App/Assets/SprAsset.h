@@ -53,6 +53,7 @@ struct Frame
 	float tempx = 0;
 	float tempy = 0;
 	bool isDragged = false;
+	std::filesystem::path path;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv;
