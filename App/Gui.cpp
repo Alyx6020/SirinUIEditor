@@ -17,6 +17,7 @@
 #include "AppSettings.h"
 #include "Settings.h"
 #include <Spr.h>
+#include "Workspace.h"
 
 
 static ImGuiEx::Canvas m_Canvas;
@@ -48,6 +49,8 @@ void Gui::RenderGui(void) noexcept
 
     if (ImGui::Begin("Menu"))
     {
+        
+
         // --- Workspace size ----------------------------------------------------------
         ImGui::InputFloat("Width", &m_workspaceSize.x, 1, 10);
         ImGui::InputFloat("Height", &m_workspaceSize.y, 1, 10);
@@ -117,18 +120,109 @@ void Gui::RenderGui(void) noexcept
     auto style = ImGui::GetStyle();
 
     ImGui::SetNextWindowSize(m_workspaceSize + style.WindowPadding * 2);
-    
+    ImGui::SetNextWindowPos(
+        ImVec2(
+            WIDTH * 0.5 - (m_workspaceSize.x * 0.5),
+            HEIGHT * 0.5 - (m_workspaceSize.y * 0.5)
+        ));
 
-    if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
+    static Frame* selected = nullptr;
+    
+    //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
     {
-        ImGui::BeginChild("area", m_workspaceSize, true);
+        auto areaTL = ImGui::GetCursorScreenPos();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
         
+        ImGui::BeginChild("area", m_workspaceSize, true, ImGuiWindowFlags_NoScrollbar);
+
+
+        for (auto& it : workspace::m_assets)
+        {
+            ImGui::SetCursorPos({ it->x, it->y });
+
+            auto cursor = ImGui::GetCursorScreenPos();
+
+            ImGui::Image((void*)it->srv.Get(), ImVec2(it->xwidth, it->xheight));
+            ImGui::SetItemAllowOverlap();
+            
+            if ((ImGui::IsMouseDown(ImGuiMouseButton_Left)) && selected == it.get())
+            {
+                if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+                {
+                    auto x = ImGui::GetMousePos().x - areaTL.x - it->tempx;
+                    auto y = ImGui::GetMousePos().y - areaTL.y - it->tempy;
+
+                    x = std::clamp(x, 0.0f, std::max(0.0f, m_workspaceSize.x - it->width));
+                    y = std::clamp(y, 0.0f, std::max(0.0f, m_workspaceSize.y - it->height));
+
+                    it->x = x;
+                    it->y = y;
+                }
+
+            }
+
+            // Update Pos
+            it->rect.x = it->x;
+            it->rect.y = it->y;
+            it->cursorx = cursor.x;
+            it->cursory = cursor.y;
+        }
+
+        if (!ImGui::IsMouseDown(ImGuiMouseButton_Left))
+        {
+            selected = nullptr;
+        }
+
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        {
+            for (auto it = workspace::m_assets.rbegin(); it != workspace::m_assets.rend(); ++it)
+            {
+                auto x = ImGui::GetMousePos().x - areaTL.x;
+                auto y = ImGui::GetMousePos().y - areaTL.y;
+                
+                if (it->get()->rect.contains({ x, y }))
+                {
+                    selected = it->get();
+
+                    it->get()->tempx = ImGui::GetMousePos().x - it->get()->cursorx;
+                    it->get()->tempy = ImGui::GetMousePos().y - it->get()->cursory;
+
+                    break;
+                }
+            }
+        }
 
         ImGui::EndChild();
+
+        ImGui::PopStyleVar();
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+            {
+
+            }
+
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_RFS"))
+            {
+                spr::SprPayload header = *static_cast<const spr::SprPayload*>(payload->Data);
+
+
+                auto x = ImGui::GetMousePos().x - areaTL.x;
+                auto y = ImGui::GetMousePos().y - areaTL.y;
+                printf("%f %f\n", x, y);
+
+                workspace::Add(header.path, header.group, header.frame, x, y);
+
+            }
+            ImGui::EndDragDropTarget();
+        }
     }
     ImGui::End();
-
+    //ImGui::PopStyleVar();
 }
 
 void Gui::SaveTexturesToBitmap()

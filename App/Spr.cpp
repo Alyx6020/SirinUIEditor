@@ -10,7 +10,7 @@ namespace spr
 {
 	namespace
 	{
-		SpriteViewMode mode = SpriteViewMode::Medium;
+		SpriteViewMode mode = SpriteViewMode::Fullsize;
 		bool showSingle = false;
 	}
 
@@ -66,6 +66,8 @@ namespace spr
 				ImGuiStyle& style = ImGui::GetStyle();
 				float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
 
+				int id = 0;
+
 				for (auto& iter : spr->m_actionList)
 				{
 					frame = 0;
@@ -73,24 +75,44 @@ namespace spr
 					for (auto& it : iter.frames)
 					{
 						ImGui::BeginGroup();
+						ImGui::PushID(id);
 						ImGui::Text("%d - %d (%s)", group, frame, it.format);
-						ImGui::Image((void*)it.srv.Get(), 
-							mode == SpriteViewMode::Fullsize ? ImVec2(it.xwidth, it.xheight) :
-							ResizeImage(it.xwidth, it.xheight,  static_cast<uint32_t>(mode))
-						);
+						
+						ImVec2 cursorBegin = ImGui::GetCursorPos();
+						ImVec2 imgSize = mode == SpriteViewMode::Fullsize ? ImVec2(it.xwidth, it.xheight) :
+							ResizeImage(it.xwidth, it.xheight, static_cast<uint32_t>(mode));
+						
+						ImGui::Image((void*)it.srv.Get(), imgSize);
 						ImGui::EndGroup();
 
-						float last_button_x2 = ImGui::GetItemRectMax().x;
-						float next_button_x2 = last_button_x2 + style.ItemSpacing.x + 200;
+						ImVec2 cursorEnd = ImGui::GetCursorPos();
+						ImGui::SetCursorPos(cursorBegin);
 
-						if (showSingle) {}
+						ImGui::InvisibleButton("drag area", ImVec2(imgSize.x, imgSize.y));
+
+						if (ImGui::BeginDragDropSource())
+						{
+							SprPayload temp(spr->path.string(), it.group, it.frame);
+							ImGui::SetDragDropPayload("_RFS", &temp, sizeof(SprPayload));
+
+
+							ImGui::Text("%d - %d", it.group, it.frame);
+							ImGui::Image((void*)it.srv.Get(), imgSize);
+							ImGui::EndDragDropSource();
+						}
+
+						//float last_button_x2 = ImGui::GetItemRectMax().x;
+						//float next_button_x2 = last_button_x2 + style.ItemSpacing.x + 200;
+
+						/*if (showSingle) {}
 						else
 						{
 							if (frame + 1 < iter.frameCount && next_button_x2 < window_visible_x2)
 								ImGui::SameLine();
-						}
-						
+						}*/
+						ImGui::PopID();
 
+						id++;
 						frame++;
 					}
 					group++;

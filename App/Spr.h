@@ -10,6 +10,20 @@ namespace spr
 		Small = 150,
 	};
 
+	struct SprPayload
+	{
+		char path[512] = {};
+		uint32_t group;
+		uint32_t frame;
+
+		SprPayload(const std::string& _path, uint32_t group, uint32_t frame)
+			:
+			group(group), frame(frame)
+		{
+			memcpy(path, _path.data(), _path.size());
+		}
+	};
+
 	class SprViewerGui
 	{
 	public:

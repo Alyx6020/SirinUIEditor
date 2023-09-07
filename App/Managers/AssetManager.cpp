@@ -35,7 +35,7 @@ int AssetManager::Register(FileType type, const std::string& name, BaseFile& ass
 
 		temp->path = std::filesystem::path(temp->path).replace_extension("" + FileType::SPR).string();
 
-		std::shared_ptr<SprAsset> asset = std::make_shared<SprAsset>(temp->name, temp->data, temp);
+		std::shared_ptr<SprAsset> asset = std::make_shared<SprAsset>(temp->name, temp->path, temp->data, temp);
 
 		auto it = m_assets.insert_or_assign({ FileType::SPR,temp->path }, std::move(asset));
 

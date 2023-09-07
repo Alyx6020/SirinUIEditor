@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="App\App.cpp" />
     <ClCompile Include="App\AppSettings.cpp" />
+    <ClCompile Include="App\Assets\SprAsset.cpp" />
     <ClCompile Include="App\FileOpenDialog.cpp" />
     <ClCompile Include="App\Gui.cpp" />
     <ClCompile Include="App\Managers\AssetManager.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="App\Managers\AssetManager.h" />
     <ClInclude Include="App\Settings.h" />
     <ClInclude Include="App\Spr.h" />
+    <ClInclude Include="App\Workspace.h" />
     <ClInclude Include="Engine\DXError\dxerr.h" />
     <ClInclude Include="Engine\DXError\DxgiInfo.h" />
     <ClInclude Include="Engine\Graphics.h" />

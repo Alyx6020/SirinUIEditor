@@ -39,7 +39,7 @@ private:
 	std::filesystem::path folderOutput {};
 
 
-	ImVec2 m_workspaceSize = { 250, 250 };
+	ImVec2 m_workspaceSize = { 500, 500 };
 
 
 	FileOpenDialog fileDialog;
