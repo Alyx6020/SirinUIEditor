@@ -22,6 +22,7 @@
 
 static ImGuiEx::Canvas m_Canvas;
 
+static Frame* m_selected = nullptr;
 
 void Gui::RenderGui(void) noexcept
 {
@@ -45,6 +46,28 @@ void Gui::RenderGui(void) noexcept
         m_DrawList->AddLine(ImVec2(0.0f, y) + VIEW_POS, ImVec2(VIEW_SIZE.x, y) + VIEW_POS, GRID_COLOR);
 
     ImGui::ShowDemoWindow();
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(VIEW_SIZE.x, 25));
+    if (ImGui::Begin("transparent", 0, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration))
+    {
+
+
+        if (ImGui::BeginMenuBar())
+        {
+            if (m_selected)
+            {
+                ImGui::SetNextItemWidth(100);
+                ImGui::InputFloat("x", &m_selected->x);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(100);
+                ImGui::InputFloat("y", &m_selected->y);
+
+            }
+        }
+        ImGui::EndMenuBar();
+    }
+    ImGui::End();
 
 
     if (ImGui::Begin("Menu"))
@@ -126,8 +149,6 @@ void Gui::RenderGui(void) noexcept
             HEIGHT * 0.5 - (m_workspaceSize.y * 0.5)
         ));
 
-    static Frame* selected = nullptr;
-    
     //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
     {
@@ -138,6 +159,7 @@ void Gui::RenderGui(void) noexcept
         
         ImGui::BeginChild("area", m_workspaceSize, true, ImGuiWindowFlags_NoScrollbar);
 
+        auto list = ImGui::GetForegroundDrawList();
 
         for (auto& it : workspace::m_assets)
         {
@@ -147,8 +169,22 @@ void Gui::RenderGui(void) noexcept
 
             ImGui::Image((void*)it->srv.Get(), ImVec2(it->xwidth, it->xheight));
             ImGui::SetItemAllowOverlap();
+
+            if (m_selected == it.get())
+            {
+                list->AddRect(
+                    ImVec2(
+                        it->x + areaTL.x,
+                        it->y + areaTL.y
+                    ),
+                    ImVec2(
+                        it->x + areaTL.x + it->width,
+                        it->y + areaTL.y + it->height
+                    ), ImColor(0.1137254908680916f, 0.5921568870544434f, 0.9254902005195618f, 1.0f));
+            }
             
-            if ((ImGui::IsMouseDown(ImGuiMouseButton_Left)) && selected == it.get())
+            
+            if ((ImGui::IsMouseDown(ImGuiMouseButton_Left)) && m_selected == it.get() && ImGui::IsWindowHovered())
             {
                 if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
                 {
@@ -171,13 +207,9 @@ void Gui::RenderGui(void) noexcept
             it->cursory = cursor.y;
         }
 
-        if (!ImGui::IsMouseDown(ImGuiMouseButton_Left))
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
         {
-            selected = nullptr;
-        }
-
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-        {
+            bool found = false;
             for (auto it = workspace::m_assets.rbegin(); it != workspace::m_assets.rend(); ++it)
             {
                 auto x = ImGui::GetMousePos().x - areaTL.x;
@@ -185,13 +217,18 @@ void Gui::RenderGui(void) noexcept
                 
                 if (it->get()->rect.contains({ x, y }))
                 {
-                    selected = it->get();
+                    m_selected = it->get();
 
                     it->get()->tempx = ImGui::GetMousePos().x - it->get()->cursorx;
                     it->get()->tempy = ImGui::GetMousePos().y - it->get()->cursory;
-
+                    found = true;
                     break;
                 }
+            }
+
+            if (!found)
+            {
+                m_selected = nullptr;
             }
         }
 

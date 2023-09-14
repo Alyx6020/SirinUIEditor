@@ -44,8 +44,8 @@ SprAsset::SprAsset(const std::string& filename, const std::filesystem::path& ful
 			it.frame = frame;
 
 			// Set Size
-			it.rect.w = it.xwidth;
-			it.rect.h = it.xheight;
+			it.rect.w = it.width;
+			it.rect.h = it.height;
 
 			it.path = path;
 
