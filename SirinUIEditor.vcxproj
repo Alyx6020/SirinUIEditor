@@ -99,7 +99,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)App;$(ProjectDir)Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -166,6 +166,7 @@
     <ClCompile Include="Engine\ImGui\imgui_canvas.cpp" />
     <ClCompile Include="Engine\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Engine\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Engine\ImGui\TextEditor.cpp" />
     <ClCompile Include="Engine\Window\Keyboard.cpp" />
     <ClCompile Include="Engine\Window\Mouse.cpp" />
     <ClCompile Include="Engine/main.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Engine\ImGui\imgui_canvas.h" />
     <ClInclude Include="Engine\ImGui\imgui_impl_dx11.h" />
     <ClInclude Include="Engine\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="Engine\ImGui\TextEditor.h" />
     <ClInclude Include="Engine\Window\Keyboard.h" />
     <ClInclude Include="Engine\Window\Mouse.h" />
     <ClInclude Include="Engine\Define.h" />

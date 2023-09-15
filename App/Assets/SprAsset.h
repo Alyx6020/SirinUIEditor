@@ -30,6 +30,12 @@ namespace spr
 			return p.x >= x && p.y >= y && p.x <= x + w && p.y <= y + h;
 		}
 	};
+
+	enum class Center
+	{
+		Vertical,
+		Horiziontal,
+	};
 }
 
 struct Frame
@@ -42,6 +48,7 @@ struct Frame
 	int linearSize;
 	std::string data;
 
+	std::string varName = "noname";
 	spr::Rect rect = {};
 
 	uint32_t group = -1;
@@ -57,6 +64,8 @@ struct Frame
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv;
+
+	void Center(ImVec2 min, ImVec2 max, spr::Center);
 };
 
 struct Actions

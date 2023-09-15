@@ -1,4 +1,5 @@
 #include "SprAsset.h"
+#include <imgui.h>
 
 Frame* SprAsset::GetFrame(int group, int frame)
 {
@@ -134,4 +135,9 @@ SprAsset::SprAsset(const std::string& filename, const std::filesystem::path& ful
 std::string SprAsset::GetName()
 {
 	return name;
+}
+
+void Frame::Center(ImVec2 min, ImVec2 max, spr::Center)
+{
+
 }

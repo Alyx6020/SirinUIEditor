@@ -19,10 +19,36 @@
 #include <Spr.h>
 #include "Workspace.h"
 
+// Text Editor
+#include "ImGui/TextEditor.h"
+
 
 static ImGuiEx::Canvas m_Canvas;
+static TextEditor m_initEditor;
+static TextEditor m_setspriteEditor;
 
 static Frame* m_selected = nullptr;
+
+bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size = -1.0f)
+{
+	using namespace ImGui;
+	ImGuiContext& g = *GImGui;
+	ImGuiWindow* window = g.CurrentWindow;
+	ImGuiID id = window->GetID("##Sptr");
+	ImRect bb;
+	bb.Min = 
+	{
+		window->DC.CursorPos.x + (split_vertically ? ImVec2(*size1, 0.0f) : ImVec2(0.0f, *size1)).x,
+		window->DC.CursorPos.y + (split_vertically ? ImVec2(*size1, 0.0f) : ImVec2(0.0f, *size1)).y,
+	};
+		
+	bb.Max =
+	{ 
+		bb.Min.x + CalcItemSize(split_vertically ? ImVec2(thickness, splitter_long_axis_size) : ImVec2(splitter_long_axis_size, thickness), 0.0f, 0.0f).x,
+		bb.Min.y + CalcItemSize(split_vertically ? ImVec2(thickness, splitter_long_axis_size) : ImVec2(splitter_long_axis_size, thickness), 0.0f, 0.0f).y
+	};
+	return SplitterBehavior(bb, id, split_vertically ? ImGuiAxis::ImGuiAxis_X : ImGuiAxis::ImGuiAxis_Y, size1, size2, min_size1, min_size2, 0.0f);
+}
 
 void Gui::RenderGui(void) noexcept
 {
@@ -49,7 +75,7 @@ void Gui::RenderGui(void) noexcept
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(VIEW_SIZE.x, 25));
-    if (ImGui::Begin("transparent", 0, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration))
+    if (ImGui::Begin("transparent", 0, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav))
     {
 
 
@@ -62,13 +88,84 @@ void Gui::RenderGui(void) noexcept
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(100);
                 ImGui::InputFloat("y", &m_selected->y);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(150);
+                ImGui::InputText("CGUIObject Name###test", &m_selected->varName);
+                ImGui::SameLine();
+                ImGui::Dummy(ImVec2(10, 10));
 
+                static int item_current_2 = 0;
+                ImGui::SetNextItemWidth(100);
+                ImGui::Combo("###combo 2 (one-liner)", &item_current_2, "Workspace\0Selection\0");
+
+                if (ImGui::BeginMenu("Align"))
+                {
+                    if (ImGui::MenuItem("Horizontal Center", NULL))
+                    {
+                        m_selected->Center(m_workspaceTL, m_workspaceTL + m_workspaceSize);
+                    }
+                    if (ImGui::MenuItem("Vertical Center", NULL))
+                    {
+
+                    }
+                    ImGui::EndMenu();
+                }
             }
+
+            
+            
         }
         ImGui::EndMenuBar();
     }
     ImGui::End();
 
+    if (ImGui::Begin("Code"))
+    {
+        m_initEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+        m_setspriteEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+
+        // Construct code
+
+        std::string code = std::format("CGUIWindow::SetSize({},{});\n", m_workspaceSize.x, m_workspaceSize.y);
+
+        if (!workspace::m_assets.empty())
+        {
+            // Set Sizes
+            code += "\n//Set Size;\n";
+            for (auto& iter : workspace::m_assets)
+            {
+                code += std::format("{}.SetSize({},{});\n", iter->varName, iter->width, iter->height);
+            }
+
+            // Set Pos
+            code += "\n//Set Pos;\n";
+            for (auto& iter : workspace::m_assets)
+            {
+                code += std::format("{}.SetPos({},{});\n", iter->varName, iter->x, iter->y);
+            }
+
+        }
+        
+        
+
+        m_initEditor.SetText(code);
+        static float size1 = 150;
+        static float size2 = 300;
+
+        ImGui::SeparatorText("Init");
+        ImGui::BeginGroup();
+        m_initEditor.Render("test", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y/2));
+        ImGui::EndGroup();
+        
+        ImGui::SeparatorText("SetSprite");
+        ImGui::BeginGroup();
+        m_setspriteEditor.Render("test2", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y));
+        ImGui::EndGroup();
+        
+
+        
+    }
+    ImGui::End();
 
     if (ImGui::Begin("Menu"))
     {
@@ -150,9 +247,9 @@ void Gui::RenderGui(void) noexcept
         ));
 
     //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
+    if (ImGui::Begin("Workspace", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNav))
     {
-        auto areaTL = ImGui::GetCursorScreenPos();
+        auto areaTL = m_workspaceTL = ImGui::GetCursorScreenPos();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 

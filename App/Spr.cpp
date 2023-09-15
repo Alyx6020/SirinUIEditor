@@ -137,7 +137,7 @@ namespace spr
 			if (!entry.is_directory() && entry.path().extension() != "" + FileType::SPR) continue;
 			Directory& childNode = parentNode.Children.emplace_back();
 			childNode.path = entry.path();
-			childNode.filename = entry.path().filename().u8string();
+			childNode.filename = entry.path().filename().string();
 			if (childNode.IsDirectory = entry.is_directory(); childNode.IsDirectory)
 			{
 				AddDirectoryNodes(childNode, std::filesystem::directory_iterator(entry));
@@ -152,7 +152,7 @@ namespace spr
 	{
 		Directory rootNode;
 		rootNode.path = rootPath;
-		rootNode.filename = rootPath.filename().u8string();
+		rootNode.filename = rootPath.filename().string();
 		if (rootNode.IsDirectory = std::filesystem::is_directory(rootPath); rootNode.IsDirectory)
 			AddDirectoryNodes(rootNode, std::filesystem::directory_iterator(rootPath));
 

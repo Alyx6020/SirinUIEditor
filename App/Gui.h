@@ -40,6 +40,7 @@ private:
 
 
 	ImVec2 m_workspaceSize = { 500, 500 };
+	ImVec2 m_workspaceTL = { 0,0 };
 
 
 	FileOpenDialog fileDialog;

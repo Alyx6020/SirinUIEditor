@@ -52,7 +52,7 @@ void FileOpenManager::Open(const std::string& path, const std::string& section, 
 	std::filesystem::path _path(section);
 	std::string data;
 
-	std::ifstream in(std::filesystem::u8path(path), std::ios_base::in | std::ios_base::binary);
+	std::ifstream in(std::filesystem::path(path), std::ios_base::in | std::ios_base::binary);
 	if (in.is_open())
 	{
 		in.ignore(offset);
